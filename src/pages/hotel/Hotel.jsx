@@ -1,12 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import {
+   faLocationDot,
+   faCircleArrowRight,
+   faCircleArrowLeft,
+   faCircleXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import Header from "../../components/Header/Header";
 import Navbar from "../../components/Navbar/Navbar";
 import MailList from "../../components/MailList/MailList";
 import Footer from "../../components/Footer/Footer";
 import "./Hotel.scss";
+import { useState } from "react";
 
 export const Hotel = () => {
+   const [slideIndex, setSlideIndex] = useState(0);
+   const [open, setOpen] = useState(false);
+
    const photos = [
       {
          src: "https://cf.bstatic.com/xdata/images/hotel/max1280x900/261707778.jpg?k=56ba0babbcbbfeb3d3e911728831dcbc390ed2cb16c51d88159f82bf751d04c6&o=&hp=1",
@@ -28,35 +37,81 @@ export const Hotel = () => {
       },
    ];
 
+   const handleOpen = (i) => {
+      setSlideIndex(i);
+      setOpen(true);
+   };
+
+   const handleMove = (direction) => {
+      let newSlideIndex;
+      if (direction === "l") {
+         newSlideIndex = slideIndex === 0 ? 5 : slideIndex - 1;
+      } else {
+         newSlideIndex = slideIndex === 5 ? 0 : slideIndex + 1;
+      }
+
+      setSlideIndex(newSlideIndex);
+   };
+
    return (
       <div>
-         <Navbar />
-         <Header type="list" />
+         {/* <Navbar />
+         <Header type="list" /> */}
          <div className="hotelContainer">
-            <div className="hotelWrapper">
-               <button className="bookNow">Reserve or Book Now</button>
-               <h1 className="hotelTitle">Grand Hotel</h1>
-               <div className="hotelAddress">
-                  <FontAwesomeIcon icon={faLocationDot}></FontAwesomeIcon>
-                  <span>Eltetsh Street 123</span>
-                  <span className="hotelDistance">
-                     Excellent location – 500m from center
-                  </span>
+            {open && (
+               <div className="slider">
+                  <FontAwesomeIcon
+                     icon={faCircleXmark}
+                     className="close"
+                     onClick={() => setOpen(false)}
+                  />
+                  <FontAwesomeIcon
+                     icon={faCircleArrowLeft}
+                     className="arrow"
+                     onClick={() => handleMove("l")}
+                  />
+                  <div className="sliderWrapper">
+                     <img
+                        src={photos[slideIndex].src}
+                        alt=""
+                        className="sliderImg"
+                     />
+                  </div>
+                  <FontAwesomeIcon
+                     icon={faCircleArrowRight}
+                     className="arrow"
+                     onClick={() => handleMove("r")}
+                  />
                </div>
+            )}
+            <div className="hotelWrapper">
+               <button className="bookNow">Reserve or Book Now!</button>
+               <h1 className="hotelTitle">Tower Street Apartments</h1>
+               <div className="hotelAddress">
+                  <FontAwesomeIcon icon={faLocationDot} />
+                  <span>Elton St 125 New york</span>
+               </div>
+               <span className="hotelDistance">
+                  Excellent location – 500m from center
+               </span>
                <span className="hotelPriceHighlight">
                   Book a stay over $114 at this property and get a free airport
                   taxi
                </span>
-
                <div className="hotelImages">
-                  {photos.map((photo) => (
-                     <div className="hotelImgWrapper">
-                        <img src={photo.src} alt="" className="hotelImg" />
+                  {photos.map((photo, i) => (
+                     <div className="hotelImgWrapper" key={i}>
+                        <img
+                           onClick={() => handleOpen(i)}
+                           src={photo.src}
+                           alt=""
+                           className="hotelImg"
+                        />
                      </div>
                   ))}
                </div>
                <div className="hotelDetails">
-                  <div className="hotelDetailsText">
+                  <div className="hotelDetailsTexts">
                      <h1 className="hotelTitle">Stay in the heart of City</h1>
                      <p className="hotelDesc">
                         Located a 5-minute walk from St. Florian's Gate in
@@ -73,7 +128,6 @@ export const Hotel = () => {
                         the property offers a paid airport shuttle service.
                      </p>
                   </div>
-
                   <div className="hotelDetailsPrice">
                      <h1>Perfect for a 9-night stay!</h1>
                      <span>
